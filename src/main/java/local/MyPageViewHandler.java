@@ -107,4 +107,21 @@ public class MyPageViewHandler {
         }
     }
 
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenPaymentCancelled_then_UPDATE_5(@Payload PaymentCancelled paymentCancelled) {
+        try {
+            if (paymentCancelled.isMe()) {
+
+                List<MyPage> myPageList = myPageRepository.findByOrderId(paymentCancelled.getOrderId());
+
+                for(MyPage myPage : myPageList){             
+                    myPage.setStatus("PAYMENT_CANCELED");                   
+                    myPageRepository.save(myPage);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
