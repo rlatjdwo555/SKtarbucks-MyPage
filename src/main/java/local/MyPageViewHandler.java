@@ -28,6 +28,8 @@ public class MyPageViewHandler {
                 myPage.setCustNm(requested.getCustNm());
                 myPage.setCafeNm(requested.getCafeNm());
                 myPage.setStatus(requested.getStatus());
+                myPage.setCount(requested.getCount());
+                myPage.setOrderType(requested.getOrderType());
                 // view 레파지토리에 save
                 myPageRepository.save(myPage);
             }
@@ -35,9 +37,6 @@ public class MyPageViewHandler {
             e.printStackTrace();
         }
     }
-
-
-
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whenCanceled_then_UPDATE_1(@Payload Canceled canceled) {
@@ -47,7 +46,7 @@ public class MyPageViewHandler {
                 List<MyPage> myPageList = myPageRepository.findByOrderId(canceled.getId());
                 for(MyPage myPage : myPageList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    myPage.setStatus(canceled.getStatus());
+                    myPage.setStatus(canceled.getStatus());                   
                     // view 레파지 토리에 save
                     myPageRepository.save(myPage);
                 }
@@ -56,33 +55,16 @@ public class MyPageViewHandler {
             e.printStackTrace();
         }
     }
+    
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenForceCanceled_then_UPDATE_2(@Payload ForceCanceled forceCanceled) {
+    public void whenProductionChanged_then_UPDATE_2(@Payload ProductionChanged productionChanged) {
         try {
-            if (forceCanceled.isMe()) {
-                // view 객체 조회
-                List<MyPage> myPageList = myPageRepository.findByOrderId(forceCanceled.getId());
-                for(MyPage myPage : myPageList){
-                    // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    myPage.setStatus(forceCanceled.getStatus());
-                    // view 레파지 토리에 save
-                    myPageRepository.save(myPage);
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whenProductionCompleted_then_UPDATE_3(@Payload ProductionCompleted productionCompleted) {
-        try {
-            if (productionCompleted.isMe()) {
-                // view 객체 조회
-                List<MyPage> myPageList = myPageRepository.findByOrderId(productionCompleted.getOrderId());
+            if (productionChanged.isMe()) {
+      
+                List<MyPage> myPageList = myPageRepository.findByOrderId(productionChanged.getOrderId());
+
                 for (MyPage myPage : myPageList) {
-                    // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    myPage.setStatus(productionCompleted.getStatus());
-                    // view 레파지 토리에 save
+                    myPage.setStatus(productionChanged.getStatus());                 
                     myPageRepository.save(myPage);
                 }
             }
@@ -91,24 +73,38 @@ public class MyPageViewHandler {
         }
     }
 
-    /*
-    *        신규 개발 조직 추가로 인한 CQRS 연동
-    * */
-
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenIncrementRequested_then_CREATE_2 (@Payload IncrementRequested incrementRequested) {
+    public void whenDeliveryStarted_then_UPDATE_3(@Payload DeliveryStarted deliveryStarted) {
         try {
-            if (incrementRequested.isMe()) {
-                // view 객체 생성
-                MyPage myPage = new MyPage();
-                // view 객체에 이벤트의 Value 를 set 함
-                myPage.setCafeNm(incrementRequested.getCafeNm());
-                myPage.setStatus(incrementRequested.getStatus());
-                // view 레파지 토리에 save
-                myPageRepository.save(myPage);
+            if (deliveryStarted.isMe()) {
+
+                List<MyPage> myPageList = myPageRepository.findByOrderId(deliveryStarted.getOrderId());
+
+                for (MyPage myPage : myPageList) {
+                    myPage.setStatus("DELIVERY_IN_PROGRESS");
+                    myPageRepository.save(myPage);
+                }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenDeliveryCompleted_then_UPDATE_4(@Payload DeliveryCompleted deliveryCompleted) {
+        try {
+            if (deliveryCompleted.isMe()) {
+
+                List<MyPage> myPageList = myPageRepository.findByOrderId(deliveryCompleted.getOrderId());
+
+                for (MyPage myPage : myPageList) {
+                    myPage.setStatus("DELIVERY_COMPLETED");
+                    myPageRepository.save(myPage);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

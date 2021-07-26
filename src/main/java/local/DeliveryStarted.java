@@ -1,12 +1,13 @@
+
 package local;
 
-public class Canceled extends AbstractEvent {
+public class DeliveryStarted extends AbstractEvent {
 
     private Long id;
-    private String cafeId;
+    private Long orderId;
+    private String cafeNm;
     private String custNm;
     private String status;
-    private String cafeNm;
 
     public Long getId() {
         return id;
@@ -15,12 +16,21 @@ public class Canceled extends AbstractEvent {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getCafeId() {
-        return cafeId;
+
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setCafeId(String cafeId) {
-        this.cafeId = cafeId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getCafeNm() {
+        return cafeNm;
+    }
+
+    public void setCafeNm(String cafeNm) {
+        this.cafeNm = cafeNm;
     }
 
     public String getCustNm() {
@@ -30,18 +40,13 @@ public class Canceled extends AbstractEvent {
     public void setCustNm(String custNm) {
         this.custNm = custNm;
     }
+
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setDeliveryStatus(String status) {
         this.status = status;
     }
-    public String getCafeNm() {
-        return cafeNm;
-    }
 
-    public void setCafeNm(String cafeNm) {
-        this.cafeNm = cafeNm;
-    }
 }

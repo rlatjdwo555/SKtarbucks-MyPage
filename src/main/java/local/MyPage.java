@@ -11,10 +11,11 @@ public class MyPage {
         @GeneratedValue(strategy=GenerationType.AUTO)
         private Long id;
         private Long orderId;
+        private int count;
         private String custNm;
         private String cafeNm;
         private String status;
-
+        private String orderType;
 
         public Long getId() {
             return id;
@@ -23,6 +24,7 @@ public class MyPage {
         public void setId(Long id) {
             this.id = id;
         }
+
         public Long getOrderId() {
             return orderId;
         }
@@ -30,13 +32,23 @@ public class MyPage {
         public void setOrderId(Long orderId) {
             this.orderId = orderId;
         }
+
         public String getCustNm() {
             return custNm;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    
+        public void setCount(int count) {
+            this.count = count;
         }
 
         public void setCustNm(String custNm) {
             this.custNm = custNm;
         }
+
         public String getCafeNm() {
             return cafeNm;
         }
@@ -44,12 +56,21 @@ public class MyPage {
         public void setCafeNm(String cafeNm) {
             this.cafeNm = cafeNm;
         }
+
         public String getStatus() {
             return status;
         }
 
         public void setStatus(String status) {
             this.status = status;
+        }
+
+        public void setOrderType(String orderType){
+            this.orderType = orderType;
+        }
+    
+        public String getOrderType(){
+            return orderType;
         }
 
 }

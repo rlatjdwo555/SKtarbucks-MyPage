@@ -1,11 +1,10 @@
 
 package local;
 
-public class ProductionCompleted extends AbstractEvent {
+public class ProductionChanged extends AbstractEvent {
 
     private Long id;
     private Long orderId;
-    private String cafeId;
     private String cafeNm;
     private String custNm;
     private String status;
@@ -24,13 +23,7 @@ public class ProductionCompleted extends AbstractEvent {
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-    public String getCafeId() {
-        return cafeId;
-    }
 
-    public void setCafeId(String cafeId) {
-        this.cafeId = cafeId;
-    }
     public String getCafeNm() {
         return cafeNm;
     }
